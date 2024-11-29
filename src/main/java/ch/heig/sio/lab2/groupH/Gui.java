@@ -1,4 +1,4 @@
-package ch.heig.sio.lab2.groupX;
+package ch.heig.sio.lab2.groupH;
 
 import ch.heig.sio.lab2.display.HeuristicComboItem;
 import ch.heig.sio.lab2.display.ObservableTspConstructiveHeuristic;
