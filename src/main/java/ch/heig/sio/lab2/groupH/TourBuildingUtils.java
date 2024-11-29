@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /// Classe utilitaire pour la construction de tournées
 /// Contient des méthodes statiques pour aider à la construction de tournées
 /// @author Group H - Ancay Rémi, Charbonnier Lucas
-public class TourBuildingUtils {
+class TourBuildingUtils {
     /// Convertit une ArrayList d'entiers en tableau d'entiers
     /// @param tourList : la liste des villes de la tournée
     /// @return le tableau des villes de la tournée
@@ -57,7 +57,7 @@ public class TourBuildingUtils {
         return smallestInsertionCost;
     }
 
-    /// Retourne la ville hors-tournée la plus proche d'une ville de la tournée
+    /// Retourne la ville hors-tournée la plus proche (ou éloignée) d'une ville de la tournée
     /// @param data : les données de notre graphe
     /// @param closestCityInTour : tableau des villes de la tournée les plus proches des villes hors tournées
     /// @param visited : tableau des villes déjà visitées

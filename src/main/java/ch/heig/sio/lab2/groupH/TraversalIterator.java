@@ -7,7 +7,7 @@ import java.util.ArrayList;
 /// Itérateur pour parcourir les arêtes d'une tournée
 /// Permet de parcourir les arêtes d'une tournée de manière circulaire
 /// @author Group H - Ancay Rémi, Charbonnier Lucas
-  public class TraversalIterator implements Iterator<Edge> { 
+  class TraversalIterator implements Iterator<Edge> { 
     private final int n; // Nombre de villes
     private int i = 0; // Indice de la ville actuelle
     private ArrayList<Integer> cities; // Liste des villes de la tournée

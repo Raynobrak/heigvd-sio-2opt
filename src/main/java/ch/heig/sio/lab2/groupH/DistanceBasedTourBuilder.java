@@ -27,7 +27,7 @@ public final class DistanceBasedTourBuilder implements ObservableTspConstructive
         final int N = data.getNumberOfCities(); // Nombre de villes
         int[] closestCityInTour = new int[N]; // Ville la plus proche de chaque ville dans la tournée
         boolean[] citiesInTour = new boolean[N]; // Villes déjà dans la tournée
-        var tourList = new ArrayList<Integer>(); // Liste des villes de la tournée
+        var tourList = new ArrayList<Integer>(N); // Liste des villes de la tournée
 
         // Ajout de la première ville
         tourList.add(startCityIndex);
