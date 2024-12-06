@@ -15,7 +15,7 @@ public final class Gui {
     };
 
     ObservableTspImprovementHeuristic[] improvementHeuristics = {
-            new Tsp2optImprovementHeuristic()
+            new HeuristicComboItem.Improvement("2 opt", new Tsp2optImprovementHeuristic())
         // Add the new improvement heuristic
     };
 
