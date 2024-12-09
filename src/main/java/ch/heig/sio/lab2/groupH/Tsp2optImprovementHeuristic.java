@@ -8,86 +8,73 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Tsp2optImprovementHeuristic implements ObservableTspImprovementHeuristic {
-    public static void swap(int[] a, int i, int j) {
-        int t = a[i];
-        a[i] = a[j];
-        a[j] = t;
+    private final int maxIterationsCount;
+    public Tsp2optImprovementHeuristic(int maxIterationsCount) {
+        this.maxIterationsCount = maxIterationsCount;
+    }
+
+    private static void swap(int[] array, int i, int j) {
+        int t = array[i];
+        array[i] = array[j];
+        array[j] = t;
     }
 
     public TspTour computeTour(TspTour initialTour, TspHeuristicObserver observer) {
-
-        int maxIterationsCount = 300000000; // todo : mettre dans ctor
-
         int[] tour = initialTour.tour().copy();
         var data = initialTour.data();
-        final int N = tour.length;
+        final int N = tour.length; // Nombre de sommets
+        long totalLength = initialTour.length(); // Longueur de la tournée
 
-        for(int iteration = 0; iteration < maxIterationsCount; ++iteration) {
+        for(int iteration = 0; iteration < this.maxIterationsCount; ++iteration) {
             int bestImprovement = 0;
-            int bestImprovementOriginA = Integer.MAX_VALUE;
-            int bestImprovementOriginB = Integer.MAX_VALUE;
 
-            // Itérer sur toutes les arêtes du tour actuel
+            int bestA = Integer.MAX_VALUE;
+            int bestC = Integer.MAX_VALUE; // Index des extrémités des arêtes (a-b) et (c-d) du meilleur échange
+
+            // Itérer sur toutes les arêtes (ab) du tour actuel
             // (pas besoin de tester la dernière arête (i = N-1) car elle aura forcément déjà été testée auparavant
-            for(int i = 0; i < N - 1; ++i) {
-                int a = i;
-                int b = (i + 1) % N;
+            for(int a = 0; a < N - 1; ++a) {
+                int b = (a + 1) % N;
 
-                // Itérer sur toutes les arêtes avec lesquelles on peut échanger i, i+1
-                for(int j = i + 2; j < N; ++j) {
+                int distAB = data.getDistance(tour[a],tour[b]);
+
+                // Itérer sur toutes les arêtes (cd) avec lesquelles on peut échanger l'arête (ab)
+                for(int c = a + 2; c < N; ++c) {
+                    int d = (c + 1) % N;
+
                     // Cas particulier avec le premier sommet, on ne va pas check la dernière arête parce qu'elle est reliée au premier sommet
-                    if(a == 0 && j == N-1)
+                    if(a == 0 && c == N-1)
                         continue;
 
-                    int c = j;
-                    int d = (j + 1) % N;
-
-                    int currentDistance = data.getDistance(tour[a],tour[b]) + data.getDistance(tour[c],tour[d]);
+                    int currentDistance = distAB + data.getDistance(tour[c],tour[d]);
                     int currentTryDistance = data.getDistance(tour[a],tour[c]) + data.getDistance(tour[b],tour[d]);
                     int improvement = currentDistance - currentTryDistance;
                     if(improvement > bestImprovement) {
                         bestImprovement = improvement;
-                        bestImprovementOriginA = a;
-                        bestImprovementOriginB = c;
+                        bestA = a;
+                        bestC = c;
                     }
                 }
             }
 
-            if(bestImprovement > 0) {
-                // Trouver le côté le plus petit à inverser
+            if(bestImprovement == 0)
+                break; // Pas d'amélioration trouvée -> fin de l'algorithme
 
-                //boolean reverseInside = (bestImprovementOriginB - bestImprovementOriginA) < N / 2;
+            // Mise à jour de la longueur totale
+            totalLength -= bestImprovement;
 
-                // échanger les extrémités des deux arêtes sélectionnées
-                int i = Math.min(bestImprovementOriginA, bestImprovementOriginB) + 1;
-                int j = Math.max(bestImprovementOriginA, bestImprovementOriginB);
-
-                int vertexI = tour[i];
-                int vertexIBefore = tour[(i-1)%N];
-                int vertexJ = tour[j];
-                int vertexJafter = tour[(j+1)%N];
-                System.out.println("Échange des arcs suivants :");
-                System.out.println(vertexIBefore + " -> " + vertexI);
-                System.out.println(vertexJ + " -> " + vertexJafter);
-
-                while(i < j) {
-                    swap(tour, i, j);
-                    i = (i+1) % N;
-                    j = (j-1) % N;
-                }
-            }
-            else {
-                // Pas d'amélioration trouvée, on
-                break;
+            // Inversion du parcours entre les deux arêtes
+            int i = Math.min(bestA, bestC) + 1;
+            int j = Math.max(bestA, bestC);
+            while(i < j) {
+                swap(tour, i, j);
+                i = (i+1) % N;
+                j = (j-1) % N;
             }
 
-            // todo : c'est dégueulasse
-            ArrayList<Integer> lst = new ArrayList<>();
-            for(int i = 0; i < N; ++i)
-                lst.add(tour[i]);
-            observer.update(new TraversalIterator(lst));
+            observer.update(new TraversalIterator(new ArrayList<>(Arrays.stream(tour).boxed().toList())));
         }
 
-        return new TspTour(data, tour, 12); // todo : mettre la bonne longueur
+        return new TspTour(data, tour, totalLength);
     }
 }
