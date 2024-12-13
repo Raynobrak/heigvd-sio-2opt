@@ -8,9 +8,11 @@ import ch.heig.sio.lab2.tsp.TspTour;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-/// Constructeur de tournée basé sur la distance
-/// Permet de construire une tournée avec une insertion "la plus proche" ou "la plus éloignée"
-/// @author Group H - Ancay Rémi, Charbonnier Lucas
+/**
+ * Constructeur de tournée basé sur la distance
+ * Permet de construire une tournée avec une insertion "la plus proche" ou "la plus éloignée"
+ * @Author Group H - Ancay Rémi, Charbonnier Lucas
+ */
 public final class DistanceBasedTourBuilder implements ObservableTspConstructiveHeuristic {
     private boolean furthestInsertion;
     public DistanceBasedTourBuilder(boolean furthestInsertion) {
