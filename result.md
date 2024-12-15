@@ -1,5 +1,13 @@
 # Résultats obtenus
 
+### Informations concernant la génération des statistiques
+- Tous les résultats, à l'exception du temps moyen d'exécution, sont exprimés en pourcentage relatif à la longueur de la tournée optimale. 
+Par exemple, un résultat de 143% signifie que la tournée obtenue est 1,43 fois plus longue que la tournée optimale.
+Le meilleur résultat possible serait donc de 0%. Un résultat négatif est, par définition, impossible.
+- Les valeurs min, max et moyennes ont été calculées à partir d'un échantillon de 50 exécutions. 
+- L'algorithme d'optimisation (2-opt) s'exécutait jusqu'à ce qu'aucune autre optimisation aie été trouvée. 
+- Le temps moyen en millisecondes comprend la génération de la tournée initiale ET le temps d'amélioration avec l'heuristique 2-opt.
+
 ## Données pour le fichier : pcb442(longueur optimale : 50778)
 | Initialisation             | Temps moyen (ms) | Min avant opt (%) | Moyenne avant opt (%) | Max avant opt (%) | Min après opt (%) | Moyenne après opt (%) | Max après opt (%) |
 | -------------------------- | ---------------- | ----------------- | --------------------- | ----------------- | ----------------- | --------------------- | ----------------- |
@@ -38,4 +46,23 @@
 | Insertion la plus éloignée | 1663             | 18,95             | 20,62                 | 23,38             | 15,90             | 18,31                 | 21,18             |
 
 # Analyse
+
+## Temps d'exécution
+
+L'heuristique *RandomTour* donne les pires résultats au niveau du temps total d'exécution. C'est logique car moins la solution de départ est bonne, alors plus le temps d'optimisation sera élevé.
+
+## Qualité des solutions avant optimisation
+
+En comparant la qualité des solutions avant optimisation en fonction de l'heuristique d'initialisation choisie, on peut voir que l'initialisation avec l'heuristique "Insertion la plus éloignée" est systématiquement meilleure qu'avec l'insertion la plus proche. Évidemment, l'initialisation aléatoire est toujours très mauvaise par rapport aux deux précédentes.
+
+## Qualité des solutions après optimisation
+
+Lorsque on ajoute une étape d'optimisation avec l'heuristique 2-opt, on remarque que les solutions sont de meilleures qualités lorsqu'on initialise avec l'heuristique "insertion la plus proche". Cependant, cela n'est le cas que pour les deux fichiers représentant des circuits électroniques (pcb442 et pcb1173).
+
+## Conclusion
+En conclusion, les résultats ci-dessus nous montrent qu'il n'y a pas de "meilleur algorithme" pour le TSP. L'algorithme ou la combinaison d'algorithmes (heuristique d'initialisation + optimisation) à utiliser dépendra du problème et la meilleure manière de les trouver est de faire des tests empiriques.
+
+Dans le cas des PCBs (pcb442 et pcb1173), où le but est de trouver un chemin le plus court permettant de diminuer le temps d'assemblage d'un circuit électronique par un bras robotisé, les meilleurs résultats ont été obtenu avec la combinaison "insertion la plus proche" + 2opt 
+
+Pour les autres fichiers représentant des positions de villes, c'est la combinaison insertion la plus éloignée + 2opt qui a donné les meilleurs résultats.
 
