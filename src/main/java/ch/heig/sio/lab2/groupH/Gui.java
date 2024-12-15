@@ -10,8 +10,9 @@ import com.formdev.flatlaf.FlatLightLaf;
 public final class Gui {
   public static void main(String[] args) {
     ObservableTspConstructiveHeuristic[] constructiveHeuristics = {
-        new HeuristicComboItem.Constructive("Random tour", new RandomTour()),
-        // Add the constructive heuristics
+            new HeuristicComboItem.Constructive("Random tour", new RandomTour()),
+            new HeuristicComboItem.Constructive("Insertion la plus proche", new DistanceBasedTourBuilder(false)),
+            new HeuristicComboItem.Constructive("Insertion la plus éloignée", new DistanceBasedTourBuilder(true)),
     };
 
     ObservableTspImprovementHeuristic[] improvementHeuristics = {

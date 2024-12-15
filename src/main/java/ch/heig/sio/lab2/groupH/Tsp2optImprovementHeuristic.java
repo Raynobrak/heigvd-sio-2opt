@@ -13,6 +13,7 @@ import java.util.Arrays;
  * @Author Group H - Ancay Rémi, Charbonnier Lucas
  */
 public class Tsp2optImprovementHeuristic implements ObservableTspImprovementHeuristic {
+    public static final int INFINITE_ITERATIONS = -1;
     private final int maxIterationsCount; // Nombre d'itérations maximum
     public Tsp2optImprovementHeuristic(int maxIterationsCount) {
         this.maxIterationsCount = maxIterationsCount;
@@ -37,7 +38,7 @@ public class Tsp2optImprovementHeuristic implements ObservableTspImprovementHeur
         final int N = tour.length; // Nombre de sommets
         long totalLength = initialTour.length(); // Longueur de la tournée
 
-        for(int iteration = 0; iteration < this.maxIterationsCount; ++iteration) { // Itérer sur le nombre d'itérations maximum
+        for(int iteration = 0; iteration < this.maxIterationsCount || this.maxIterationsCount == INFINITE_ITERATIONS; ++iteration) { // Itérer sur le nombre d'itérations maximum
             int bestImprovement = 0; // Meilleure amélioration trouvée
             int bestA = Integer.MAX_VALUE; // Index des extrémités des arêtes (a-b) et (c-d) du meilleur échange
             int bestC = Integer.MAX_VALUE;

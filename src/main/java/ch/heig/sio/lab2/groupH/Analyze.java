@@ -13,7 +13,7 @@ import java.io.FileNotFoundException;
  */
 public final class Analyze {
   private static final Integer OPTIMISATIONS_COUNT = 50; // Nombre d'optimisations à effectuer pour chaque heuristique
-  private static final Integer MAX_ITERATIONS_COUNT = 999999999; // Nombre d'itérations maximum pour l'heuristique 2-opt
+  private static final Integer MAX_ITERATIONS_COUNT = Tsp2optImprovementHeuristic.INFINITE_ITERATIONS; // Nombre d'itérations maximum pour l'heuristique 2-opt
 
   /**
    * Classe interne pour stocker les statistiques d'amélioration
@@ -93,7 +93,7 @@ public final class Analyze {
     for(int i = 0; i < OPTIMISATIONS_COUNT; ++i) {
       long start = System.currentTimeMillis();
 
-      var initialTour = heuristic.computeTour(data, permutations.tour().get(i)); // Crée une tournée initiale
+      var initialTour = heuristic.computeTour(data, permutations.tour().get(i)); // Crée une tournée initiale (dans le cas de la tournée aléatoire, le deuxième paramètre ne sera juste pas utilisé)
       long lengthBeforeOpt = initialTour.length();
 
       var optimizedTour = new Tsp2optImprovementHeuristic(MAX_ITERATIONS_COUNT).computeTour(initialTour); // Optimise la tournée
