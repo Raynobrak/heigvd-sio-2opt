@@ -20,10 +20,7 @@ public class Tsp2optImprovementHeuristic implements ObservableTspImprovementHeur
     }
 
     /**
-     * Echange deux arêtes de la tournée
-     * @param array : la tournée
-     * @param i : indice de la première arête
-     * @param j : indice de la deuxième arête
+     * Echange deux valeurs (i et j) dans un tableau (array)
      */
     private static void swap(int[] array, int i, int j) {
         int t = array[i];
@@ -31,26 +28,35 @@ public class Tsp2optImprovementHeuristic implements ObservableTspImprovementHeur
         array[j] = t;
     }
 
+    /**
+     * Améliore la tournée donnée avec des améliorations 2-opt
+     * @param initialTour La tournée existante
+     * @param observer
+     * @return
+     */
     @Override
     public TspTour computeTour(TspTour initialTour, TspHeuristicObserver observer) {
-        int[] tour = initialTour.tour().copy(); // Copie de la tournée
+        int[] tour = initialTour.tour().copy(); // Copie de la tournée dans un tableau pour avoir un objet local
         var data = initialTour.data(); // Données du tour
         final int N = tour.length; // Nombre de sommets
         long totalLength = initialTour.length(); // Longueur de la tournée
 
-        for(int iteration = 0; iteration < this.maxIterationsCount || this.maxIterationsCount == INFINITE_ITERATIONS; ++iteration) { // Itérer sur le nombre d'itérations maximum
+        // Tant qu'on a pas dépassé le nombre d'itérations maximum de l'algorithme...
+        for(int iteration = 0; iteration < this.maxIterationsCount || this.maxIterationsCount == INFINITE_ITERATIONS; ++iteration) {
             int bestImprovement = 0; // Meilleure amélioration trouvée
-            int bestA = Integer.MAX_VALUE; // Index des extrémités des arêtes (a-b) et (c-d) du meilleur échange
+
+            // Indices des extrémités des arêtes (a-b) et (c-d) du meilleur échange trouvé
+            int bestA = Integer.MAX_VALUE;
             int bestC = Integer.MAX_VALUE;
 
-            // Itérer sur toutes les arêtes (ab) du tour actuel
-            // (pas besoin de tester la dernière arête (i = N-1) car elle aura forcément déjà été testée auparavant
+            // Itérer sur toutes les arêtes (a-b) du tour actuel
+            // (pas besoin de tester la dernière arête (a = N-1) car elle aura forcément déjà été testée auparavant
             for(int a = 0; a < N - 1; ++a) {
                 int b = (a + 1) % N;
 
                 int distAB = data.getDistance(tour[a],tour[b]);
 
-                // Itérer sur toutes les arêtes (cd) avec lesquelles on peut échanger l'arête (ab)
+                // Itérer sur toutes les arêtes (c-d) avec lesquelles on peut échanger l'arête (a-b)
                 for(int c = a + 2; c < N; ++c) {
                     int d = (c + 1) % N;
 
@@ -62,7 +68,7 @@ public class Tsp2optImprovementHeuristic implements ObservableTspImprovementHeur
                     int currentDistance = distAB + data.getDistance(tour[c],tour[d]);
                     int currentTryDistance = data.getDistance(tour[a],tour[c]) + data.getDistance(tour[b],tour[d]);
                     int improvement = currentDistance - currentTryDistance;
-                    if(improvement > bestImprovement) { // Si l'amélioration est meilleure que la meilleure amélioration trouvée
+                    if(improvement > bestImprovement) { // Si l'amélioration courante est meilleure que la meilleure amélioration trouvée jusqu'à maintenant
                         bestImprovement = improvement;
                         bestA = a;
                         bestC = c;
@@ -70,12 +76,12 @@ public class Tsp2optImprovementHeuristic implements ObservableTspImprovementHeur
                 }
             }
 
-            if(bestImprovement == 0) // Pas d'amélioration trouvée -> fin de l'algorithme
-                break;
+            if(bestImprovement == 0) // Pas d'amélioration trouvée
+                break; // On ne cherche pas plus loin, l'algorithme est terminé
 
             totalLength -= bestImprovement; // Mise à jour de la longueur totale
 
-            // Inversion du parcours entre les deux arêtes
+            // Échange des deux arêtes et inversion du parcours
             int i = Math.min(bestA, bestC) + 1;
             int j = Math.max(bestA, bestC);
             while(i < j) {
@@ -84,6 +90,7 @@ public class Tsp2optImprovementHeuristic implements ObservableTspImprovementHeur
                 j = (j-1) % N;
             }
 
+            // Mise à jour de l'interface graphique
             observer.update(new TraversalIterator(new ArrayList<>(Arrays.stream(tour).boxed().toList())));
         }
 
